@@ -4,4 +4,6 @@ class StringConst {
   static const homeHeadline = 'Explore stylish furniture for you';
   static const searchHint = 'Search';
   static const bestOffer = 'Best offer';
+  static const productDetail = 'Product Detail';
+  static const addToCart = 'Add to cart';
 }

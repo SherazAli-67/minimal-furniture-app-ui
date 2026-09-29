@@ -64,6 +64,36 @@ class AppTextStyles {
     fontFamily: StringConst.appFontFamily,
     color: AppColors.whiteColor,
   );
+  static TextStyle detailBadgeStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.cardDarkColor,
+  );
+  static TextStyle detailTitleRowStyle = TextStyle(
+    fontSize: 22,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.whiteColor,
+  );
+  static TextStyle detailAddToCartStyle = TextStyle(
+    fontSize: 22,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.cardDarkColor,
+  );
+  static TextStyle detailRelatedNameStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.blackColor,
+  );
+  static TextStyle detailRelatedPriceStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: .w400,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.blackColor,
+  );
   static TextStyle priceStyle = TextStyle(
     fontSize: 16,
     fontWeight: .w600,

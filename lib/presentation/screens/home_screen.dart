@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minimal_furniture_app/constants/string_const.dart';
 import 'package:minimal_furniture_app/core/app_colors.dart';
 import 'package:minimal_furniture_app/core/app_data.dart';
@@ -113,13 +114,13 @@ class HomeScreen extends StatelessWidget {
       scrollDirection: .horizontal,
       itemCount: AppData.products.length,
       separatorBuilder: (context, index) => const SizedBox(width: _offerCardGap,),
-      itemBuilder: (_, index) => _buildHomeOfferCard(product: AppData.products[index],),
+      itemBuilder: (context, index) => _buildHomeOfferCard(context, product: AppData.products[index],),
     );
   }
 
-  Widget _buildHomeOfferCard({required Product product}) {
+  Widget _buildHomeOfferCard(BuildContext context, {required Product product}) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => context.push('/product/${product.id}'),
       child: SizedBox(
       width: _offerCardWidth,
       height: _offerCardHeight,
