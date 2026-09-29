@@ -25,7 +25,7 @@ class AppData {
     ),
     Product(
       id: 'modern-sofa',
-      name: 'Modern Sofa',
+      name: 'Modern sofa',
       price: 200,
       image: AssetRes.modernSofaImg,
       isNew: true,
@@ -34,9 +34,9 @@ class AppData {
     Product(
       id: 'arm-chair',
       name: 'Arm chair',
-      price: 165,
+      price: 150,
       image: AssetRes.armChairImg,
-      isNew: false,
+      isNew: true,
       colors: defaultColorOptions,
     ),
   ];

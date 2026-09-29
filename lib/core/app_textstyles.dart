@@ -10,17 +10,29 @@ class AppTextStyles {
     color: AppColors.blackColor,
   );
   static TextStyle heroTitleStyle = TextStyle(
-    fontSize: 32,
-    fontWeight: .w700,
+    fontSize: 28,
+    fontWeight: .w600,
     fontFamily: StringConst.appFontFamily,
-    color: AppColors.blackColor,
+    color: AppColors.cardDarkColor,
     height: 1.2,
   );
   static TextStyle sectionTitleStyle = TextStyle(
-    fontSize: 20,
-    fontWeight: .w700,
+    fontSize: 28,
+    fontWeight: .w600,
     fontFamily: StringConst.appFontFamily,
-    color: AppColors.blackColor,
+    color: AppColors.cardDarkColor,
+  );
+  static TextStyle offerCardNameStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.offerCardTextColor,
+  );
+  static TextStyle offerCardPriceStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: .w400,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.offerCardTextColor,
   );
   static TextStyle screenTitleStyle = TextStyle(
     fontSize: 18,
@@ -83,10 +95,10 @@ class AppTextStyles {
     color: AppColors.secondaryTextColor,
   );
   static TextStyle searchHintStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: .w400,
+    fontSize: 16,
+    fontWeight: .w500,
     fontFamily: StringConst.appFontFamily,
-    color: AppColors.secondaryTextColor,
+    color: AppColors.searchHintColor,
   );
   static TextStyle badgeStyle = TextStyle(
     fontSize: 12,
