@@ -172,4 +172,40 @@ class AppTextStyles {
     fontFamily: StringConst.appFontFamily,
     color: AppColors.whiteColor,
   );
+  static TextStyle cartItemNameStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.blackColor,
+  );
+  static TextStyle cartItemPriceStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: .w500,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.cartMutedTextColor,
+  );
+  static TextStyle cartQuantityStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: .w500,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.cartMutedTextColor,
+  );
+  static TextStyle cartSummaryLabelStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: .w500,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.cartSummaryLabelColor,
+  );
+  static TextStyle cartSummaryValueStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.cardDarkColor,
+  );
+  static TextStyle cartContinueStyle = TextStyle(
+    fontSize: 22,
+    fontWeight: .w600,
+    fontFamily: StringConst.appFontFamily,
+    color: AppColors.offerCardTextColor,
+  );
 }

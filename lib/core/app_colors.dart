@@ -17,4 +17,6 @@ class AppColors {
   static const dividerColor = Color(0xffE8E8E8);
   static const accentTealColor = Color(0xff4ECDC4);
   static const summaryLabelColor = Color(0xff6B6B6B);
+  static const cartMutedTextColor = Color(0xffB3B3B3);
+  static const cartSummaryLabelColor = Color(0xffB8B8B8);
 }

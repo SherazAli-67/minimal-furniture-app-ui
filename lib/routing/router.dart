@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minimal_furniture_app/presentation/screens/cart_screen.dart';
 import 'package:minimal_furniture_app/presentation/screens/home_screen.dart';
 import 'package:minimal_furniture_app/presentation/screens/product_detail_screen.dart';
 
@@ -17,7 +18,7 @@ GoRouter router = GoRouter(
             GoRoute(path: NamedRoutes.menu.routeName, builder: (_, state) => Center(child: Text("Menu"),)),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: NamedRoutes.cart.routeName, builder: (_, state) => Center(child: Text("Cart"),)),
+            GoRoute(path: NamedRoutes.cart.routeName, builder: (_, state) => const CartScreen(),),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: NamedRoutes.like.routeName, builder: (_, state) => Center(child: Text("Favorite"),)),

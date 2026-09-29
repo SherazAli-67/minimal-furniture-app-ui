@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimal_furniture_app/core/app_colors.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
+import 'package:minimal_furniture_app/core/models/cart_line.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
 
 class AppData {
@@ -50,5 +51,22 @@ class AppData {
 
   static List<Product> productsExcept(String id) {
     return products.where((product) => product.id != id).toList();
+  }
+
+  static List<CartLine> demoCartLines() {
+    return products.map((product) => CartLine(product: product, quantity: 3)).toList();
+  }
+
+  static String cartDisplayName(Product product) {
+    switch (product.id) {
+      case 'boogly-chair':
+        return 'Boogly Chair';
+      case 'modern-sofa':
+        return 'Modern Sofa';
+      case 'arm-chair':
+        return 'Arm Chair';
+      default:
+        return product.name;
+    }
   }
 }
