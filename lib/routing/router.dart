@@ -1,15 +1,39 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minimal_furniture_app/presentation/screens/home_screen.dart';
+
+import '../presentation/screens/main_menu_page.dart';
 
 GoRouter router = GoRouter(
     initialLocation: NamedRoutes.home.routeName,
     routes: [
-      GoRoute(path: NamedRoutes.home.routeName, builder: (ctx, state)=> HomeScreen())
+      StatefulShellRoute.indexedStack(
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(path: NamedRoutes.home.routeName, builder: (_, state) =>   HomeScreen(),),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: NamedRoutes.menu.routeName, builder: (_, state) => Center(child: Text("Menu"),)),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: NamedRoutes.cart.routeName, builder: (_, state) => Center(child: Text("Cart"),)),
+          ]),
+
+          StatefulShellBranch(routes: [
+            GoRoute(path: NamedRoutes.like.routeName, builder: (_, state) => Center(child: Text("Favorite"),)),
+          ]),
+        ],
+        builder: (ctx, state, navigationShell) => MainMenuPage(navigationShell: navigationShell),
+      ),
     ],
 );
 
 enum NamedRoutes {
-  home('/home');
+  home('/home'),
+  menu('/menu'),
+  cart('/cart'),
+  like('/like')
+  ;
   
   final String routeName;
   const NamedRoutes(this.routeName);
