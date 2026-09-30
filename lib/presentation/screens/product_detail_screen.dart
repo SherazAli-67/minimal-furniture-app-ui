@@ -3,12 +3,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minimal_furniture_app/constants/number_constant.dart';
 import 'package:minimal_furniture_app/constants/string_const.dart';
 import 'package:minimal_furniture_app/core/app_colors.dart';
 import 'package:minimal_furniture_app/core/app_data.dart';
 import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
+import 'package:minimal_furniture_app/routing/router.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({super.key, required this.productId});
@@ -20,8 +22,6 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  static const _horizontalPadding = 20.0;
-
   int _selectedColorIndex = 2;
   bool _isFavorite = false;
 
@@ -40,31 +40,47 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
       backgroundColor: AppColors.cardDarkColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: .fromLTRB(_horizontalPadding, 16, _horizontalPadding, 16),
-                child: Column(
-                  crossAxisAlignment: .start,
-                  spacing: 0,
-                  children: [
-                    _buildHeader(context),
-                    const SizedBox(height: 33),
-                    if (product.isNew) _buildDetailNewBadge(),
-                    if (product.isNew) const SizedBox(height: 10),
-                    _buildTitlePriceRow(product),
-                    _buildHeroSection(product),
-                    const SizedBox(height: 20),
-                    _buildColorSwatches(product),
-                    const SizedBox(height: 45),
-                    _buildRelatedProductsRow(context, relatedProducts),
-                  ],
+        child: Padding(
+          padding: .fromLTRB(NumberConstant.horizontalPadding, 16, NumberConstant.horizontalPadding, 16),
+          child: Column(
+            spacing: 16,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    spacing: NumberConstant.detailHeroToSwatchSpacing,
+                    children: [
+                      Column(
+                        crossAxisAlignment: .start,
+                        spacing: NumberConstant.detailHeaderToContentSpacing,
+                        children: [
+                          _buildHeader(context),
+                          Column(
+                            crossAxisAlignment: .start,
+                            spacing: NumberConstant.detailBadgeToTitleSpacing,
+                            children: [
+                              if (product.isNew) _buildDetailNewBadge(),
+                              _buildTitlePriceRow(product),
+                            ],
+                          ),
+                        ],
+                      ),
+                      _buildHeroSection(product),
+                      Column(
+                        spacing: NumberConstant.detailSwatchToRelatedSpacing,
+                        children: [
+                          _buildColorSwatches(product),
+                          _buildRelatedProductsRow(context, relatedProducts),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            _buildBottomActions(context),
-          ],
+              _buildBottomActions(),
+            ],
+          ),
         ),
       ),
     );
@@ -88,12 +104,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 53,
-          height: 53,
-          child: Center(
-            child: SvgPicture.asset(iconPath, height: 22, colorFilter: .mode(AppColors.blackColor, .srcIn),),
-          ),
+        child: Padding(
+          padding: .all(15.5),
+          child: SvgPicture.asset(iconPath, colorFilter: .mode(AppColors.blackColor, .srcIn),),
         ),
       ),
     );
@@ -111,21 +124,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildTitlePriceRow(Product product) {
-    return Padding(
-      padding: .symmetric(vertical: 14),
-      child: Row(
-        mainAxisAlignment: .spaceBetween,
-        children: [
-          Flexible(child: Text(product.name, style: AppTextStyles.detailTitleRowStyle, overflow: .ellipsis,),),
-          Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.detailTitleRowStyle,),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: .spaceBetween,
+      children: [
+        Flexible(child: Text(product.name, style: AppTextStyles.detailTitleRowStyle, overflow: .ellipsis,),),
+        Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.detailTitleRowStyle,),
+      ],
     );
   }
 
   Widget _buildHeroSection(Product product) {
     return SizedBox(
-      height: 360,
+      height: NumberConstant.detailHeroHeight,
       width: double.infinity,
       child: Stack(
         alignment: .center,
@@ -133,71 +143,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         children: [
           Positioned(
             top: 0,
-            child: SizedBox(
-              width: 320,
-              height: 320,
-              child: Image.asset(product.image, fit: .contain,),
-            ),
+            child: Image.asset(product.image, width: NumberConstant.detailHeroImageSize, height: NumberConstant.detailHeroImageSize, fit: .contain,),
           ),
           Positioned(
             bottom: 0,
             left: 13,
             right: 13,
-            child: _buildRotationIndicator(),
+            child: SvgPicture.asset(AssetRes.icBottomLine),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildRotationIndicator() {
-    return SizedBox(
-      height: 133,
-      child: Stack(
-        alignment: .bottomCenter,
-        children: [
-          CustomPaint(
-            size: const Size(double.infinity, 118),
-            painter: _ProductArcPainter(),
-          ),
-          Container(
-            width: 30,
-            height: 30,
-            decoration: const BoxDecoration(
-              color: AppColors.whiteColor,
-              shape: .circle,
-            ),
-            child: Row(
-              mainAxisAlignment: .center,
-              children: [
-                Icon(Icons.chevron_left, size: 14, color: AppColors.blackColor,),
-                Icon(Icons.chevron_right, size: 14, color: AppColors.blackColor,),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildColorSwatches(Product product) {
     final colors = product.colors.isNotEmpty ? product.colors : AppData.defaultColorOptions;
     return Center(
       child: Row(
         mainAxisSize: .min,
-        spacing: 16,
+        spacing: NumberConstant.detailColorSwatchSpacing,
         children: List.generate(colors.length, (index) {
           final color = colors[index];
           final isSelected = index == _selectedColorIndex;
           return GestureDetector(
             onTap: () => setState(() => _selectedColorIndex = index),
             child: Container(
-              width: 20,
-              height: 20,
+              padding: .all(10),
               decoration: BoxDecoration(
                 shape: .circle,
                 color: color,
-                border: isSelected ? .all(color: AppColors.secondaryTextColor, width: 2) : null,
+                border: isSelected ? .all(color: AppColors.secondaryTextColor, width: 4) : null,
                 boxShadow: color == AppColors.whiteColor && !isSelected
                     ? [BoxShadow(color: AppColors.blackColor.withValues(alpha: 0.15), blurRadius: 2)]
                     : null,
@@ -213,7 +189,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (relatedProducts.isEmpty) return const SizedBox.shrink();
     final items = relatedProducts.length > 2 ? relatedProducts.sublist(0, 2) : relatedProducts;
     return Row(
-      spacing: 20,
+      spacing: NumberConstant.detailRelatedGap,
       children: items.map((product) => Expanded(child: _buildRelatedProductCard(context, product),)).toList(),
     );
   }
@@ -224,17 +200,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       borderRadius: .circular(14),
       clipBehavior: .antiAlias,
       child: InkWell(
-        onTap: () => context.pushReplacement('/product/${product.id}'),
-        child: SizedBox(
-          height: 72,
+        onTap: () => context.pushReplacement('${NamedRoutes.productDetail.routeName}/${product.id}'),
+        child: Padding(
+          padding: .symmetric(vertical: 3),
           child: Row(
             spacing: 6,
             children: [
-              SizedBox(
-                width: 61,
-                height: 66,
-                child: Image.asset(product.image, fit: .contain, alignment: .bottomCenter,),
-              ),
+              Image.asset(product.image, width: 61, height: 66, fit: .contain, alignment: .bottomCenter,),
               Expanded(
                 child: Column(
                   crossAxisAlignment: .start,
@@ -253,49 +225,44 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildBottomActions(BuildContext context) {
-    return Padding(
-      padding: .fromLTRB(21, 0, 21, 16),
-      child: Row(
-        spacing: 12,
-        children: [
-          Expanded(
-            child: Material(
-              color: AppColors.whiteColor,
-              borderRadius: .circular(63),
-              child: InkWell(
-                onTap: () {},
-                borderRadius: .circular(63),
-                child: Container(
-                  alignment: .center,
-                  padding: .symmetric(vertical: 22),
-                  child: Text(StringConst.addToCart, style: AppTextStyles.detailAddToCartStyle,),
-                ),
-              ),
-            ),
-          ),
-          Material(
-            color: AppColors.offerCartButtonColor,
-            shape: const CircleBorder(),
+  Widget _buildBottomActions() {
+    return Row(
+      spacing: NumberConstant.detailBottomActionSpacing,
+      children: [
+        Expanded(
+          child: Material(
+            color: AppColors.whiteColor,
+            borderRadius: .circular(63),
             child: InkWell(
-              onTap: () => setState(() => _isFavorite = !_isFavorite),
-              customBorder: const CircleBorder(),
-              child: SizedBox(
-                width: 71,
-                height: 71,
-                child: Center(
-                  child: SvgPicture.asset(AssetRes.icFavoriteMenu, height: 28, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
-                ),
+              onTap: () {},
+              borderRadius: .circular(63),
+              child: Padding(
+                padding: .symmetric(vertical: 22),
+                child: Text(StringConst.addToCart, style: AppTextStyles.detailAddToCartStyle, textAlign: .center,),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+        Material(
+          color: AppColors.offerCartButtonColor,
+          shape: const CircleBorder(),
+          child: InkWell(
+            onTap: () => setState(() => _isFavorite = !_isFavorite),
+            customBorder: const CircleBorder(),
+            child: Padding(
+              padding: .all(21.5),
+              child: SvgPicture.asset(AssetRes.icFavoriteMenu, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _ProductArcPainter extends CustomPainter {
+  const _ProductArcPainter();
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()

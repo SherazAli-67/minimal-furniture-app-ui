@@ -13,6 +13,7 @@ class AssetRes {
   static const icMore = '${_iconsPath}ic_more.svg';
   static const icCartMenu = '${_iconsPath}ic_cart_menu.svg';
   static const icFavoriteMenu = '${_iconsPath}ic_favorite_menu.svg';
+  static const icBottomLine = '${_iconsPath}bottom_line.svg';
 
   static const booglyChairImg = '${_imagesPath}boogly_chair_img.png';
   static const armChairImg = '${_imagesPath}arm_chair.png';
