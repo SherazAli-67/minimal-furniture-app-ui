@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minimal_furniture_app/constants/number_constant.dart';
 import 'package:minimal_furniture_app/constants/string_const.dart';
 import 'package:minimal_furniture_app/core/app_colors.dart';
 import 'package:minimal_furniture_app/core/app_data.dart';
 import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/cart_line.dart';
+import 'package:minimal_furniture_app/routing/router.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -16,8 +18,6 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  static const _horizontalPadding = 20.0;
-
   late List<CartLine> _lines;
 
   @override
@@ -37,17 +37,16 @@ class _CartScreenState extends State<CartScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: .fromLTRB(_horizontalPadding, 16, _horizontalPadding, 0),
-              child: _buildHeader(context),
-            ),
-            const SizedBox(height: 37),
             Expanded(
-              child: ListView.separated(
-                padding: .symmetric(horizontal: _horizontalPadding),
-                itemCount: _lines.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 14),
-                itemBuilder: (context, index) => _buildCartItemCard(index),
+              child: Padding(
+                padding: .fromLTRB(NumberConstant.horizontalPadding, 16, NumberConstant.horizontalPadding, 0),
+                child: Column(
+                  spacing: NumberConstant.cartHeaderToListSpacing,
+                  children: [
+                    _buildHeader(context),
+                    Expanded(child: _buildCartList(),),
+                  ],
+                ),
               ),
             ),
             _buildSummaryPanel(),
@@ -61,7 +60,7 @@ class _CartScreenState extends State<CartScreen> {
     return Row(
       mainAxisAlignment: .spaceBetween,
       children: [
-        _buildHeaderIconButton(iconPath: AssetRes.icArrowBack, onTap: () => context.go('/home'),),
+        _buildHeaderIconButton(iconPath: AssetRes.icArrowBack, onTap: () => context.go(NamedRoutes.home.routeName),),
         Text(StringConst.cartList, style: AppTextStyles.screenTitleStyle,),
         _buildHeaderIconButton(iconPath: AssetRes.icMore, onTap: () {},),
       ],
@@ -75,21 +74,25 @@ class _CartScreenState extends State<CartScreen> {
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 53,
-          height: 53,
-          child: Center(
-            child: SvgPicture.asset(iconPath, height: 22, colorFilter: .mode(AppColors.blackColor, .srcIn),),
-          ),
+        child: Padding(
+          padding: .all(15.5),
+          child: SvgPicture.asset(iconPath, colorFilter: .mode(AppColors.blackColor, .srcIn),),
         ),
       ),
+    );
+  }
+
+  Widget _buildCartList() {
+    return ListView.separated(
+      itemCount: _lines.length,
+      separatorBuilder: (context, index) => const SizedBox(height: NumberConstant.cartItemGap,),
+      itemBuilder: (context, index) => _buildCartItemCard(index),
     );
   }
 
   Widget _buildCartItemCard(int index) {
     final line = _lines[index];
     return Container(
-      height: 113,
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
         borderRadius: .circular(16),
@@ -98,18 +101,20 @@ class _CartScreenState extends State<CartScreen> {
       child: Padding(
         padding: .fromLTRB(25, 1, 16, 1),
         child: Row(
-          spacing: 24,
+          spacing: NumberConstant.cartItemContentSpacing,
           children: [
-            SizedBox(
-              width: 88,
-              height: 111,
-              child: Image.asset(line.product.image, fit: .contain, alignment: .bottomCenter,),
+            Image.asset(
+              line.product.image,
+              width: NumberConstant.cartItemImageWidth,
+              height: NumberConstant.cartItemImageHeight,
+              fit: .contain,
+              alignment: .bottomCenter,
             ),
             Expanded(
               child: Column(
                 crossAxisAlignment: .start,
                 mainAxisAlignment: .center,
-                spacing: 8,
+                spacing: NumberConstant.cartItemTextSpacing,
                 children: [
                   Text(AppData.cartDisplayName(line.product), style: AppTextStyles.cartItemNameStyle,),
                   Text('\$${line.product.price.toStringAsFixed(1)}', style: AppTextStyles.cartItemPriceStyle,),
@@ -125,7 +130,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _buildQuantityStepper(int index, int quantity) {
     return Row(
-      spacing: 12,
+      spacing: NumberConstant.cartQuantitySpacing,
       children: [
         _buildMinusButton(onTap: () => _updateQuantity(index, quantity - 1),),
         Text('$quantity', style: AppTextStyles.cartQuantityStyle,),
@@ -138,18 +143,15 @@ class _CartScreenState extends State<CartScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 17,
-        height: 17,
         decoration: BoxDecoration(
           shape: .circle,
           border: .all(color: AppColors.cartMutedTextColor, width: 1),
         ),
-        child: Center(
-          child: Container(
-            width: 7,
-            height: 1,
-            color: AppColors.cartMutedTextColor,
-          ),
+        padding: .all(5),
+        child: Container(
+          width: 7,
+          height: 1,
+          color: AppColors.cartMutedTextColor,
         ),
       ),
     );
@@ -159,12 +161,11 @@ class _CartScreenState extends State<CartScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 17,
-        height: 17,
         decoration: BoxDecoration(
           color: AppColors.cardDarkColor,
           borderRadius: .circular(5),
         ),
+        padding: .all(3.5),
         child: const Icon(Icons.add, size: 10, color: AppColors.whiteColor,),
       ),
     );
@@ -180,14 +181,14 @@ class _CartScreenState extends State<CartScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.whiteColor,
-        borderRadius: .vertical(top: Radius.circular(32)),
+        borderRadius: .vertical(top: Radius.circular(NumberConstant.cartSummaryTopRadius)),
       ),
-      padding: .fromLTRB(20, 28, 20, 16),
+      padding: .fromLTRB(NumberConstant.horizontalPadding, 28, NumberConstant.horizontalPadding, 16),
       child: Column(
-        spacing: 20,
+        spacing: NumberConstant.cartSummarySectionSpacing,
         children: [
           Column(
-            spacing: 12,
+            spacing: NumberConstant.cartSummaryRowSpacing,
             children: [
               _buildSummaryRow(label: StringConst.subtotal, value: _formatMoney(_subtotal),),
               _buildSummaryRow(label: StringConst.deliveryCharge, value: _formatMoney(AppData.deliveryCharge),),
@@ -195,17 +196,18 @@ class _CartScreenState extends State<CartScreen> {
           ),
           Divider(color: AppColors.dividerColor, height: 1, thickness: 1,),
           _buildSummaryRow(label: StringConst.total, value: _formatMoney(_total, singleDecimal: true),),
-          Material(
-            color: AppColors.cardDarkColor,
-            borderRadius: .circular(63),
+          Container(
+            width: .infinity,
+            decoration: BoxDecoration(
+              color: AppColors.cardDarkColor,
+              borderRadius: .circular(63),
+            ),
             child: InkWell(
               onTap: () {},
               borderRadius: .circular(63),
-              child: Container(
-                width: double.infinity,
-                alignment: .center,
-                padding: .symmetric(vertical: 20),
-                child: Text(StringConst.continueLabel, style: AppTextStyles.cartContinueStyle,),
+              child: Padding(
+                padding: .symmetric(vertical: 10),
+                child: Text(StringConst.continueLabel, style: AppTextStyles.cartContinueStyle, textAlign: .center,),
               ),
             ),
           ),

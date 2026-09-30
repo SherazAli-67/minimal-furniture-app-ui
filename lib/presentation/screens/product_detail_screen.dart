@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -258,21 +256,4 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ],
     );
   }
-}
-
-class _ProductArcPainter extends CustomPainter {
-  const _ProductArcPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.whiteColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height * 1.6);
-    canvas.drawArc(rect, math.pi * 0.15, math.pi * 0.7, false, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

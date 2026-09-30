@@ -12,4 +12,15 @@ class NumberConstant {
   static const detailSwatchToRelatedSpacing = 45.0;
   static const detailColorSwatchSpacing = 16.0;
   static const detailBottomActionSpacing = 12.0;
+  static const cartHeaderToListSpacing = 37.0;
+  static const cartItemGap = 14.0;
+  static const cartItemImageWidth = 88.0;
+  static const cartItemImageHeight = 111.0;
+  static const cartItemContentSpacing = 24.0;
+  static const cartItemTextSpacing = 8.0;
+  static const cartQuantitySpacing = 12.0;
+  static const cartSummarySectionSpacing = 20.0;
+  static const cartSummaryRowSpacing = 12.0;
+  static const cartSummaryTopRadius = 32.0;
 }
+
