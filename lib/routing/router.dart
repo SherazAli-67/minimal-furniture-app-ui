@@ -27,7 +27,7 @@ GoRouter router = GoRouter(
         builder: (ctx, state, navigationShell) => MainMenuPage(navigationShell: navigationShell),
       ),
       GoRoute(
-        path: '/product/:id',
+        path: '${NamedRoutes.productDetail.routeName}/:id',
         builder: (_, state) => ProductDetailScreen(productId: state.pathParameters['id']!,),
       ),
     ],
@@ -37,7 +37,9 @@ enum NamedRoutes {
   home('/home'),
   menu('/menu'),
   cart('/cart'),
-  like('/like');
+  like('/like'),
+  productDetail('/product')
+  ;
 
   final String routeName;
   const NamedRoutes(this.routeName);

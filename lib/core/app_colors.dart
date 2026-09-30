@@ -19,4 +19,5 @@ class AppColors {
   static const summaryLabelColor = Color(0xff6B6B6B);
   static const cartMutedTextColor = Color(0xffB3B3B3);
   static const cartSummaryLabelColor = Color(0xffB8B8B8);
+  static const greyBgColor = Color(0xff565656);
 }
