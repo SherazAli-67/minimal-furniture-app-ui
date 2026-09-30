@@ -9,6 +9,7 @@ import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
 import 'package:minimal_furniture_app/core/providers/app_provider.dart';
+import 'package:minimal_furniture_app/presentation/widgets/fade_slide_in.dart';
 import 'package:minimal_furniture_app/presentation/widgets/new_badge.dart';
 import 'package:minimal_furniture_app/routing/router.dart';
 import 'package:provider/provider.dart';
@@ -31,13 +32,19 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: .start,
                 spacing: 17,
                 children: [
-                  _buildHeaderRow(),
-                  SizedBox(
-                    width: 218,
-                    child: Text(StringConst.homeHeadline, style: AppTextStyles.heroTitleStyle,),
+                  FadeSlideIn(child: _buildHeaderRow(),),
+                  FadeSlideIn(
+                    delay: NumberConstant.animStagger,
+                    child: SizedBox(
+                      width: 218,
+                      child: Text(StringConst.homeHeadline, style: AppTextStyles.heroTitleStyle,),
+                    ),
                   ),
-                  _buildSearchFilterRow(),
-                  Text(StringConst.bestOffer, style: AppTextStyles.sectionTitleStyle,),
+                  FadeSlideIn(delay: NumberConstant.animStagger * 2, child: _buildSearchFilterRow(),),
+                  FadeSlideIn(
+                    delay: NumberConstant.animStagger * 3,
+                    child: Text(StringConst.bestOffer, style: AppTextStyles.sectionTitleStyle,),
+                  ),
                 ],
               ),
               Expanded(child: _buildOfferCarousel(),),
@@ -109,7 +116,10 @@ class HomeScreen extends StatelessWidget {
       scrollDirection: .horizontal,
       itemCount: AppData.products.length,
       separatorBuilder: (context, index) => const SizedBox(width: NumberConstant.offerCardGap,),
-      itemBuilder: (context, index) => _buildHomeOfferCard(context, product: AppData.products[index],),
+      itemBuilder: (context, index) => FadeSlideIn(
+        delay: NumberConstant.animStagger * (4 + index),
+        child: _buildHomeOfferCard(context, product: AppData.products[index],),
+      ),
     );
   }
 
@@ -144,7 +154,10 @@ class HomeScreen extends StatelessWidget {
             Positioned(
               top: -10,
               left: 28,
-              child: Image.asset(product.image, fit: .cover, height: 243, width: 190, alignment: .bottomCenter,),
+              child: Hero(
+                tag: 'product-image-${product.id}',
+                child: Image.asset(product.image, fit: .cover, height: 243, width: 190, alignment: .bottomCenter,),
+              ),
             ),
             Positioned(
               bottom: 140,
@@ -168,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                         Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.offerCardPriceStyle,),
                       ],
                     ),
-                    GestureDetector(
+                    _ScaleOnPress(
                       onTap: () => context.read<AppProvider>().addToCart(product),
                       child: Container(
                         decoration: BoxDecoration(
@@ -185,6 +198,36 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ScaleOnPress extends StatefulWidget {
+  const _ScaleOnPress({required this.onTap, required this.child});
+
+  final VoidCallback onTap;
+  final Widget child;
+
+  @override
+  State<_ScaleOnPress> createState() => _ScaleOnPressState();
+}
+
+class _ScaleOnPressState extends State<_ScaleOnPress> {
+  var _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: _pressed ? NumberConstant.animPressScale : 1,
+        duration: NumberConstant.animFast,
+        curve: Curves.easeOutCubic,
+        child: widget.child,
       ),
     );
   }

@@ -22,5 +22,11 @@ class NumberConstant {
   static const cartSummarySectionSpacing = 20.0;
   static const cartSummaryRowSpacing = 12.0;
   static const cartSummaryTopRadius = 32.0;
+  static const animFast = Duration(milliseconds: 200);
+  static const animNormal = Duration(milliseconds: 350);
+  static const animSlow = Duration(milliseconds: 500);
+  static const animStagger = Duration(milliseconds: 100);
+  static const animSlideOffset = 24.0;
+  static const animPressScale = 0.92;
 }
 
