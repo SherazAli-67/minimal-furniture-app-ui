@@ -8,30 +8,16 @@ import 'package:minimal_furniture_app/core/app_data.dart';
 import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/cart_line.dart';
+import 'package:minimal_furniture_app/core/providers/app_provider.dart';
 import 'package:minimal_furniture_app/routing/router.dart';
+import 'package:provider/provider.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  late List<CartLine> _lines;
-
-  @override
-  void initState() {
-    super.initState();
-    _lines = AppData.demoCartLines();
-  }
-
-  double get _subtotal => _lines.fold(0, (sum, line) => sum + line.lineTotal);
-
-  double get _total => _subtotal + AppData.deliveryCharge;
-
-  @override
   Widget build(BuildContext context) {
+    final cart = context.watch<AppProvider>();
     return Scaffold(
       backgroundColor: AppColors.scaffoldBgColor,
       body: SafeArea(
@@ -44,12 +30,12 @@ class _CartScreenState extends State<CartScreen> {
                   spacing: NumberConstant.cartHeaderToListSpacing,
                   children: [
                     _buildHeader(context),
-                    Expanded(child: _buildCartList(),),
+                    Expanded(child: _buildCartList(context, cart),),
                   ],
                 ),
               ),
             ),
-            _buildSummaryPanel(),
+            _buildSummaryPanel(cart),
           ],
         ),
       ),
@@ -82,16 +68,15 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartList() {
+  Widget _buildCartList(BuildContext context, AppProvider cart) {
     return ListView.separated(
-      itemCount: _lines.length,
+      itemCount: cart.cartLines.length,
       separatorBuilder: (context, index) => const SizedBox(height: NumberConstant.cartItemGap,),
-      itemBuilder: (context, index) => _buildCartItemCard(index),
+      itemBuilder: (context, index) => _buildCartItemCard(context, index, cart.cartLines[index]),
     );
   }
 
-  Widget _buildCartItemCard(int index) {
-    final line = _lines[index];
+  Widget _buildCartItemCard(BuildContext context, int index, CartLine line) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
@@ -118,7 +103,7 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Text(AppData.cartDisplayName(line.product), style: AppTextStyles.cartItemNameStyle,),
                   Text('\$${line.product.price.toStringAsFixed(1)}', style: AppTextStyles.cartItemPriceStyle,),
-                  _buildQuantityStepper(index, line.quantity),
+                  _buildQuantityStepper(context, index, line.quantity),
                 ],
               ),
             ),
@@ -128,13 +113,14 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildQuantityStepper(int index, int quantity) {
+  Widget _buildQuantityStepper(BuildContext context, int index, int quantity) {
+    final cart = context.read<AppProvider>();
     return Row(
       spacing: NumberConstant.cartQuantitySpacing,
       children: [
-        _buildMinusButton(onTap: () => _updateQuantity(index, quantity - 1),),
+        _buildMinusButton(onTap: () => cart.updateQuantity(index, quantity - 1),),
         Text('$quantity', style: AppTextStyles.cartQuantityStyle,),
-        _buildPlusButton(onTap: () => _updateQuantity(index, quantity + 1),),
+        _buildPlusButton(onTap: () => cart.updateQuantity(index, quantity + 1),),
       ],
     );
   }
@@ -171,12 +157,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  void _updateQuantity(int index, int quantity) {
-    if (quantity < 1) return;
-    setState(() => _lines[index] = _lines[index].copyWith(quantity: quantity));
-  }
-
-  Widget _buildSummaryPanel() {
+  Widget _buildSummaryPanel(AppProvider cart) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -190,12 +171,12 @@ class _CartScreenState extends State<CartScreen> {
           Column(
             spacing: NumberConstant.cartSummaryRowSpacing,
             children: [
-              _buildSummaryRow(label: StringConst.subtotal, value: _formatMoney(_subtotal),),
+              _buildSummaryRow(label: StringConst.subtotal, value: _formatMoney(cart.subtotal),),
               _buildSummaryRow(label: StringConst.deliveryCharge, value: _formatMoney(AppData.deliveryCharge),),
             ],
           ),
           Divider(color: AppColors.dividerColor, height: 1, thickness: 1,),
-          _buildSummaryRow(label: StringConst.total, value: _formatMoney(_total, singleDecimal: true),),
+          _buildSummaryRow(label: StringConst.total, value: _formatMoney(cart.total, singleDecimal: true),),
           Container(
             width: .infinity,
             decoration: BoxDecoration(

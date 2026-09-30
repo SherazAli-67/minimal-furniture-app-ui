@@ -8,33 +8,25 @@ import 'package:minimal_furniture_app/core/app_data.dart';
 import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
+import 'package:minimal_furniture_app/core/providers/app_provider.dart';
 import 'package:minimal_furniture_app/presentation/widgets/related_card_item_widget.dart';
-import 'package:minimal_furniture_app/routing/router.dart';
+import 'package:provider/provider.dart';
 
-class ProductDetailScreen extends StatefulWidget {
+class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({super.key, required this.productId});
 
   final String productId;
 
   @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
-}
-
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  int _selectedColorIndex = 2;
-  bool _isFavorite = false;
-
-  Product? get _product => AppData.productById(widget.productId);
-
-  @override
   Widget build(BuildContext context) {
-    final product = _product;
+    final product = AppData.productById(productId);
     if (product == null) {
       return Scaffold(
         backgroundColor: AppColors.cardDarkColor,
         body: Center(child: Text('Product not found', style: AppTextStyles.screenTitleLightStyle,),),
       );
     }
+    final appProvider = context.watch<AppProvider>();
     final relatedProducts = AppData.productsExcept(product.id);
     return Scaffold(
       backgroundColor: AppColors.cardDarkColor,
@@ -69,15 +61,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Column(
                         spacing: NumberConstant.detailSwatchToRelatedSpacing,
                         children: [
-                          _buildColorSwatches(product),
-                          _buildRelatedProductsRow(context, relatedProducts),
+                          _buildColorSwatches(context, product, appProvider),
+                          _buildRelatedProductsRow(relatedProducts),
                         ],
                       ),
                     ],
                   ),
                 ),
               ),
-              _buildBottomActions(),
+              _buildBottomActions(context, product, appProvider),
             ],
           ),
         ),
@@ -155,18 +147,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-
-  Widget _buildColorSwatches(Product product) {
+  Widget _buildColorSwatches(BuildContext context, Product product, AppProvider appProvider) {
     final colors = product.colors.isNotEmpty ? product.colors : AppData.defaultColorOptions;
+    final selectedColorIndex = appProvider.selectedColorIndex(product.id);
     return Center(
       child: Row(
         mainAxisSize: .min,
         spacing: NumberConstant.detailColorSwatchSpacing,
         children: List.generate(colors.length, (index) {
           final color = colors[index];
-          final isSelected = index == _selectedColorIndex;
+          final isSelected = index == selectedColorIndex;
           return GestureDetector(
-            onTap: () => setState(() => _selectedColorIndex = index),
+            onTap: () => context.read<AppProvider>().selectColor(product.id, index),
             child: Container(
               padding: .all(10),
               decoration: BoxDecoration(
@@ -184,7 +176,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildRelatedProductsRow(BuildContext context, List<Product> relatedProducts) {
+  Widget _buildRelatedProductsRow(List<Product> relatedProducts) {
     if (relatedProducts.isEmpty) return const SizedBox.shrink();
     final items = relatedProducts.length > 2 ? relatedProducts.sublist(0, 2) : relatedProducts;
     return Row(
@@ -193,7 +185,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildBottomActions() {
+  Widget _buildBottomActions(BuildContext context, Product product, AppProvider appProvider) {
+    final isFavorite = appProvider.isFavorite(product.id);
     return Row(
       spacing: NumberConstant.detailBottomActionSpacing,
       children: [
@@ -202,7 +195,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             color: AppColors.whiteColor,
             borderRadius: .circular(63),
             child: InkWell(
-              onTap: () {},
+              onTap: () => context.read<AppProvider>().addToCart(product),
               borderRadius: .circular(63),
               child: Padding(
                 padding: .symmetric(vertical: 22),
@@ -212,10 +205,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ),
         Material(
-          color: AppColors.offerCartButtonColor,
+          color: isFavorite ? AppColors.newBadgeColor : AppColors.offerCartButtonColor,
           shape: const CircleBorder(),
           child: InkWell(
-            onTap: () => setState(() => _isFavorite = !_isFavorite),
+            onTap: () => context.read<AppProvider>().toggleFavorite(product.id),
             customBorder: const CircleBorder(),
             child: Padding(
               padding: .all(21.5),

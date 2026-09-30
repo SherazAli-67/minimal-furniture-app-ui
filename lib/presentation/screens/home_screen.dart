@@ -8,8 +8,10 @@ import 'package:minimal_furniture_app/core/app_data.dart';
 import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
+import 'package:minimal_furniture_app/core/providers/app_provider.dart';
 import 'package:minimal_furniture_app/presentation/widgets/new_badge.dart';
 import 'package:minimal_furniture_app/routing/router.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -30,15 +32,12 @@ class HomeScreen extends StatelessWidget {
                 spacing: 17,
                 children: [
                   _buildHeaderRow(),
-                  Row(
-                    children: [
-                      //homeHeadline, heroTitleStyle
-                      Expanded(flex: 2, child: const SizedBox()),
-                      Expanded(child: const SizedBox())
-                    ],
+                  SizedBox(
+                    width: 218,
+                    child: Text(StringConst.homeHeadline, style: AppTextStyles.heroTitleStyle,),
                   ),
                   _buildSearchFilterRow(),
-                  //bestOffer, sectionTitleStyle
+                  Text(StringConst.bestOffer, style: AppTextStyles.sectionTitleStyle,),
                 ],
               ),
               Expanded(child: _buildOfferCarousel(),),
@@ -57,14 +56,12 @@ class HomeScreen extends StatelessWidget {
           borderRadius: .circular(8),
           child: Padding(
             padding: .all(8),
-            //icDrawer
-            child: const SizedBox()
+            child: SvgPicture.asset(AssetRes.icDrawerMenu, colorFilter: .mode(AppColors.blackColor, .srcIn),),
           ),
         ),
         const Spacer(),
-        ClipOval(child:
-        //profileAvatar, width: 53, height: 53
-         const SizedBox()
+        ClipOval(
+          child: Image.asset(AssetRes.profileAvatar, width: 53, height: 53, fit: .cover,),
         ),
       ],
     );
@@ -77,30 +74,28 @@ class HomeScreen extends StatelessWidget {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              // color: AppColors.searchFieldColor,
+              color: AppColors.searchFieldColor,
               borderRadius: .circular(42),
             ),
             padding: .symmetric(horizontal: 20, vertical: 17),
             child: Row(
               spacing: 10,
               children: [
-                //icSearch
-
-                //searchHint, searchHintStyle
+                SvgPicture.asset(AssetRes.icSearch, colorFilter: .mode(AppColors.searchHintColor, .srcIn),),
+                Text(StringConst.searchHint, style: AppTextStyles.searchHintStyle,),
               ],
             ),
           ),
         ),
         Material(
-          // color: AppColors.cardDarkColor,
+          color: AppColors.cardDarkColor,
           borderRadius: .circular(10),
           child: InkWell(
             onTap: () {},
             borderRadius: .circular(10),
             child: Padding(
               padding: .symmetric(horizontal: 15.5, vertical: 18),
-              //icFilter
-              child: const SizedBox()
+              child: SvgPicture.asset(AssetRes.icFilter, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
             ),
           ),
         ),
@@ -118,7 +113,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildHomeOfferCard(BuildContext context, {required Product product}) {
     return GestureDetector(
       onTap: () => context.push('${NamedRoutes.productDetail.routeName}/${product.id}'),
@@ -135,31 +129,30 @@ class HomeScreen extends StatelessWidget {
               child: Container(
                 height: 330,
                 decoration: BoxDecoration(
-                  // color: AppColors.whiteColor,
+                  color: AppColors.whiteColor,
                   borderRadius: .circular(18),
-                  /*boxShadow: [
+                  boxShadow: [
                     BoxShadow(
                       color: AppColors.blackColor.withValues(alpha: 0.1),
                       blurRadius: 40,
                       offset: const Offset(0, 4),
                     ),
-                  ],*/
+                  ],
                 ),
               ),
             ),
             Positioned(
               top: -10,
               left: 28,
-              //product.image, height: 243, width: 190, alignment: bottomCenter, fit.cover
-              child: const SizedBox()
+              child: Image.asset(product.image, fit: .cover, height: 243, width: 190, alignment: .bottomCenter,),
             ),
             Positioned(
-              bottom: 100,
+              bottom: 140,
               left: 8,
               right: 8,
               child: Container(
                 decoration: BoxDecoration(
-                  // color: AppColors.cardDarkColor,
+                  color: AppColors.cardDarkColor,
                   borderRadius: .circular(11),
                 ),
                 padding: .symmetric(horizontal: 20, vertical: 10),
@@ -170,19 +163,21 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: .start,
                       spacing: 4,
                       children: [
-                        // if (product.isNew) const NewBadge(),
-                        //product.name, offerCardNameStyle
-                        //\$${product.price.toStringAsFixed(1)}, offerCardPrice
+                        if (product.isNew) const NewBadge(),
+                        Text(product.name, style: AppTextStyles.offerCardNameStyle,),
+                        Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.offerCardPriceStyle,),
                       ],
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        // color: AppColors.greyBgColor,
-                        shape: .circle,
+                    GestureDetector(
+                      onTap: () => context.read<AppProvider>().addToCart(product),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.greyBgColor,
+                          shape: .circle,
+                        ),
+                        padding: .all(15),
+                        child: SvgPicture.asset(AssetRes.icCartMenu, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
                       ),
-                      padding: .all(15),
-                      //icCartMenu, color: white
-                      child: const SizedBox()
                     ),
                   ],
                 ),
