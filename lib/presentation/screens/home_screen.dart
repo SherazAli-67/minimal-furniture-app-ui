@@ -11,6 +11,7 @@ import 'package:minimal_furniture_app/core/models/product.dart';
 import 'package:minimal_furniture_app/core/providers/app_provider.dart';
 import 'package:minimal_furniture_app/presentation/widgets/fade_slide_in.dart';
 import 'package:minimal_furniture_app/presentation/widgets/new_badge.dart';
+import 'package:minimal_furniture_app/presentation/widgets/scale_on_press.dart';
 import 'package:minimal_furniture_app/routing/router.dart';
 import 'package:provider/provider.dart';
 
@@ -181,7 +182,7 @@ class HomeScreen extends StatelessWidget {
                         Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.offerCardPriceStyle,),
                       ],
                     ),
-                    _ScaleOnPress(
+                    ScaleOnPress(
                       onTap: () => context.read<AppProvider>().addToCart(product),
                       child: Container(
                         decoration: BoxDecoration(
@@ -198,36 +199,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ScaleOnPress extends StatefulWidget {
-  const _ScaleOnPress({required this.onTap, required this.child});
-
-  final VoidCallback onTap;
-  final Widget child;
-
-  @override
-  State<_ScaleOnPress> createState() => _ScaleOnPressState();
-}
-
-class _ScaleOnPressState extends State<_ScaleOnPress> {
-  var _pressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) => setState(() => _pressed = false),
-      onTapCancel: () => setState(() => _pressed = false),
-      onTap: widget.onTap,
-      child: AnimatedScale(
-        scale: _pressed ? NumberConstant.animPressScale : 1,
-        duration: NumberConstant.animFast,
-        curve: Curves.easeOutCubic,
-        child: widget.child,
       ),
     );
   }

@@ -9,7 +9,9 @@ import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
 import 'package:minimal_furniture_app/core/providers/app_provider.dart';
+import 'package:minimal_furniture_app/presentation/widgets/fade_slide_in.dart';
 import 'package:minimal_furniture_app/presentation/widgets/related_card_item_widget.dart';
+import 'package:minimal_furniture_app/presentation/widgets/scale_on_press.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -46,30 +48,39 @@ class ProductDetailScreen extends StatelessWidget {
                         crossAxisAlignment: .start,
                         spacing: NumberConstant.detailHeaderToContentSpacing,
                         children: [
-                          _buildHeader(context),
-                          Column(
-                            crossAxisAlignment: .start,
-                            spacing: NumberConstant.detailBadgeToTitleSpacing,
-                            children: [
-                              if (product.isNew) _buildDetailNewBadge(),
-                              _buildTitlePriceRow(product),
-                            ],
+                          FadeSlideIn(child: _buildHeader(context),),
+                          FadeSlideIn(
+                            delay: NumberConstant.animStagger,
+                            child: Column(
+                              crossAxisAlignment: .start,
+                              spacing: NumberConstant.detailBadgeToTitleSpacing,
+                              children: [
+                                if (product.isNew) _buildDetailNewBadge(),
+                                _buildTitlePriceRow(product),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                       _buildHeroSection(product),
-                      Column(
-                        spacing: NumberConstant.detailSwatchToRelatedSpacing,
-                        children: [
-                          _buildColorSwatches(context, product, appProvider),
-                          _buildRelatedProductsRow(relatedProducts),
-                        ],
+                      FadeSlideIn(
+                        delay: NumberConstant.animStagger * 2,
+                        child: Column(
+                          spacing: NumberConstant.detailSwatchToRelatedSpacing,
+                          children: [
+                            _buildColorSwatches(context, product, appProvider),
+                            _buildRelatedProductsRow(relatedProducts),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-              _buildBottomActions(context, product, appProvider),
+              FadeSlideIn(
+                delay: NumberConstant.animStagger * 3,
+                child: _buildBottomActions(context, product, appProvider),
+              ),
             ],
           ),
         ),
@@ -134,13 +145,19 @@ class ProductDetailScreen extends StatelessWidget {
         children: [
           Positioned(
             top: 0,
-            child: Image.asset(product.image, width: NumberConstant.detailHeroImageSize, height: NumberConstant.detailHeroImageSize, fit: .contain,),
+            child: Hero(
+              tag: 'product-image-${product.id}',
+              child: Image.asset(product.image, width: NumberConstant.detailHeroImageSize, height: NumberConstant.detailHeroImageSize, fit: .contain,),
+            ),
           ),
           Positioned(
             bottom: 0,
             left: 13,
             right: 13,
-            child: SvgPicture.asset(AssetRes.icBottomLine),
+            child: FadeSlideIn(
+              delay: NumberConstant.animStagger,
+              child: SvgPicture.asset(AssetRes.icBottomLine),
+            ),
           ),
         ],
       ),
@@ -159,12 +176,14 @@ class ProductDetailScreen extends StatelessWidget {
           final isSelected = index == selectedColorIndex;
           return GestureDetector(
             onTap: () => context.read<AppProvider>().selectColor(product.id, index),
-            child: Container(
+            child: AnimatedContainer(
+              duration: NumberConstant.animFast,
+              curve: Curves.easeOutCubic,
               padding: .all(10),
               decoration: BoxDecoration(
                 shape: .circle,
                 color: color,
-                border: isSelected ? .all(color: AppColors.secondaryTextColor, width: 4) : null,
+                border: isSelected ? .all(color: AppColors.secondaryTextColor, width: 4) : .all(color: Colors.transparent, width: 4),
                 boxShadow: color == AppColors.whiteColor && !isSelected
                     ? [BoxShadow(color: AppColors.blackColor.withValues(alpha: 0.15), blurRadius: 2)]
                     : null,
@@ -191,11 +210,10 @@ class ProductDetailScreen extends StatelessWidget {
       spacing: NumberConstant.detailBottomActionSpacing,
       children: [
         Expanded(
-          child: Material(
-            color: AppColors.whiteColor,
-            borderRadius: .circular(63),
-            child: InkWell(
-              onTap: () => context.read<AppProvider>().addToCart(product),
+          child: ScaleOnPress(
+            onTap: () => context.read<AppProvider>().addToCart(product),
+            child: Material(
+              color: AppColors.whiteColor,
               borderRadius: .circular(63),
               child: Padding(
                 padding: .symmetric(vertical: 22),
@@ -204,13 +222,19 @@ class ProductDetailScreen extends StatelessWidget {
             ),
           ),
         ),
-        Material(
-          color: isFavorite ? AppColors.newBadgeColor : AppColors.offerCartButtonColor,
-          shape: const CircleBorder(),
-          child: InkWell(
-            onTap: () => context.read<AppProvider>().toggleFavorite(product.id),
-            customBorder: const CircleBorder(),
-            child: Padding(
+        ScaleOnPress(
+          onTap: () => context.read<AppProvider>().toggleFavorite(product.id),
+          child: AnimatedScale(
+            scale: isFavorite ? 1.08 : 1,
+            duration: NumberConstant.animFast,
+            curve: Curves.easeOutCubic,
+            child: AnimatedContainer(
+              duration: NumberConstant.animFast,
+              curve: Curves.easeOutCubic,
+              decoration: BoxDecoration(
+                color: isFavorite ? AppColors.newBadgeColor : AppColors.offerCartButtonColor,
+                shape: .circle,
+              ),
               padding: .all(21.5),
               child: SvgPicture.asset(AssetRes.icFavoriteMenu, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
             ),
