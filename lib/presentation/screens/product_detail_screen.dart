@@ -8,6 +8,7 @@ import 'package:minimal_furniture_app/core/app_data.dart';
 import 'package:minimal_furniture_app/core/app_textstyles.dart';
 import 'package:minimal_furniture_app/core/asset_res.dart';
 import 'package:minimal_furniture_app/core/models/product.dart';
+import 'package:minimal_furniture_app/presentation/widgets/related_card_item_widget.dart';
 import 'package:minimal_furniture_app/routing/router.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -188,38 +189,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final items = relatedProducts.length > 2 ? relatedProducts.sublist(0, 2) : relatedProducts;
     return Row(
       spacing: NumberConstant.detailRelatedGap,
-      children: items.map((product) => Expanded(child: _buildRelatedProductCard(context, product),)).toList(),
-    );
-  }
-
-  Widget _buildRelatedProductCard(BuildContext context, Product product) {
-    return Material(
-      color: AppColors.scaffoldBgColor,
-      borderRadius: .circular(14),
-      clipBehavior: .antiAlias,
-      child: InkWell(
-        onTap: () => context.pushReplacement('${NamedRoutes.productDetail.routeName}/${product.id}'),
-        child: Padding(
-          padding: .symmetric(vertical: 3),
-          child: Row(
-            spacing: 6,
-            children: [
-              Image.asset(product.image, width: 61, height: 66, fit: .contain, alignment: .bottomCenter,),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  mainAxisAlignment: .center,
-                  spacing: 6,
-                  children: [
-                    Text(product.name, style: AppTextStyles.detailRelatedNameStyle, maxLines: 1, overflow: .ellipsis,),
-                    Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.detailRelatedPriceStyle,),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      children: items.map((product) => Expanded(child: RelatedProductCardItem(product: product),)).toList(),
     );
   }
 

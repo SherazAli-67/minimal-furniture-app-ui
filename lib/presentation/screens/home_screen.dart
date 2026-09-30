@@ -30,12 +30,15 @@ class HomeScreen extends StatelessWidget {
                 spacing: 17,
                 children: [
                   _buildHeaderRow(),
-                  SizedBox(
-                    width: 218,
-                    child: Text(StringConst.homeHeadline, style: AppTextStyles.heroTitleStyle,),
+                  Row(
+                    children: [
+                      //homeHeadline, heroTitleStyle
+                      Expanded(flex: 2, child: const SizedBox()),
+                      Expanded(child: const SizedBox())
+                    ],
                   ),
                   _buildSearchFilterRow(),
-                  Text(StringConst.bestOffer, style: AppTextStyles.sectionTitleStyle,),
+                  //bestOffer, sectionTitleStyle
                 ],
               ),
               Expanded(child: _buildOfferCarousel(),),
@@ -54,12 +57,14 @@ class HomeScreen extends StatelessWidget {
           borderRadius: .circular(8),
           child: Padding(
             padding: .all(8),
-            child: SvgPicture.asset(AssetRes.icDrawerMenu, colorFilter: .mode(AppColors.blackColor, .srcIn),),
+            //icDrawer
+            child: const SizedBox()
           ),
         ),
         const Spacer(),
-        ClipOval(
-          child: Image.asset(AssetRes.profileAvatar, width: 53, height: 53, fit: .cover,),
+        ClipOval(child:
+        //profileAvatar, width: 53, height: 53
+         const SizedBox()
         ),
       ],
     );
@@ -72,28 +77,30 @@ class HomeScreen extends StatelessWidget {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.searchFieldColor,
+              // color: AppColors.searchFieldColor,
               borderRadius: .circular(42),
             ),
             padding: .symmetric(horizontal: 20, vertical: 17),
             child: Row(
               spacing: 10,
               children: [
-                SvgPicture.asset(AssetRes.icSearch, colorFilter: .mode(AppColors.searchHintColor, .srcIn),),
-                Text(StringConst.searchHint, style: AppTextStyles.searchHintStyle,),
+                //icSearch
+
+                //searchHint, searchHintStyle
               ],
             ),
           ),
         ),
         Material(
-          color: AppColors.cardDarkColor,
+          // color: AppColors.cardDarkColor,
           borderRadius: .circular(10),
           child: InkWell(
             onTap: () {},
             borderRadius: .circular(10),
             child: Padding(
               padding: .symmetric(horizontal: 15.5, vertical: 18),
-              child: SvgPicture.asset(AssetRes.icFilter, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
+              //icFilter
+              child: const SizedBox()
             ),
           ),
         ),
@@ -111,6 +118,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+
   Widget _buildHomeOfferCard(BuildContext context, {required Product product}) {
     return GestureDetector(
       onTap: () => context.push('${NamedRoutes.productDetail.routeName}/${product.id}'),
@@ -127,22 +135,23 @@ class HomeScreen extends StatelessWidget {
               child: Container(
                 height: 330,
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  // color: AppColors.whiteColor,
                   borderRadius: .circular(18),
-                  boxShadow: [
+                  /*boxShadow: [
                     BoxShadow(
                       color: AppColors.blackColor.withValues(alpha: 0.1),
                       blurRadius: 40,
                       offset: const Offset(0, 4),
                     ),
-                  ],
+                  ],*/
                 ),
               ),
             ),
             Positioned(
               top: -10,
               left: 28,
-              child: Image.asset(product.image, fit: .cover, height: 243, width: 190, alignment: .bottomCenter,),
+              //product.image, height: 243, width: 190, alignment: bottomCenter, fit.cover
+              child: const SizedBox()
             ),
             Positioned(
               bottom: 100,
@@ -150,7 +159,7 @@ class HomeScreen extends StatelessWidget {
               right: 8,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.cardDarkColor,
+                  // color: AppColors.cardDarkColor,
                   borderRadius: .circular(11),
                 ),
                 padding: .symmetric(horizontal: 20, vertical: 10),
@@ -161,18 +170,19 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: .start,
                       spacing: 4,
                       children: [
-                        if (product.isNew) const NewBadge(),
-                        Text(product.name, style: AppTextStyles.offerCardNameStyle,),
-                        Text('\$${product.price.toStringAsFixed(1)}', style: AppTextStyles.offerCardPriceStyle,),
+                        // if (product.isNew) const NewBadge(),
+                        //product.name, offerCardNameStyle
+                        //\$${product.price.toStringAsFixed(1)}, offerCardPrice
                       ],
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: AppColors.greyBgColor,
+                        // color: AppColors.greyBgColor,
                         shape: .circle,
                       ),
                       padding: .all(15),
-                      child: SvgPicture.asset(AssetRes.icCartMenu, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
+                      //icCartMenu, color: white
+                      child: const SizedBox()
                     ),
                   ],
                 ),
